@@ -149,6 +149,35 @@ vec3 unequal_circle(vec2 _st){
     return vec3(dist < c1-c3, dist > c2+c1, dist < c3+c2);
 }
 
+vec3 radar_scan(vec2 _st){
+    vec3 planets = vec3(0.0, 0.0, 0.0);
+    for(int i = 0; i < 5; i++){
+        float phase = u_time+random(_st, 0.0);
+        planets += draw_point(_st, vec2(0.5+sin(phase)*i*0.1, abs(0.5+cos(phase)*i*0.1)), 20);
+    }
+    return planets;
+}
+
+vec3 spiral_planets(vec2 _st){
+    vec3 planets = vec3(0.0, 0.0, 0.0);
+    float num_planets = 300;
+    for(int i = 0; i < num_planets; i++){
+        float phase = u_time*i*0.001;
+        planets += draw_point(_st, vec2(0.5+sin(phase)*i*0.001, abs(0.5+cos(phase)*i*0.001)), i*0.04);
+    }
+    return planets;
+}
+
+vec3 planets(vec2 _st, vec2 center){
+    vec3 planets = vec3(0.0, 0.0, 0.0);
+    float num_planets = 10;
+    for(int i = 0; i < num_planets; i++){
+        float phase = u_time*i*0.1;
+        planets += draw_point(_st, vec2(center.x+sin(phase)*i*0.01, center.y+cos(phase)*i*0.01), i*4);
+    }
+    return planets;
+}
+
 void main() {
 
     vec2 st = gl_FragCoord.xy/u_resolution;
@@ -163,7 +192,19 @@ void main() {
    //vec3 point = vec3(dist>0.02, 0.0, 0.0);
     vec3 canvas = vec3(0.0, 0.0, 0.0);
 
-    canvas += unequal_circle(st);
+    //canvas += unequal_circle(st);
+
+    canvas += planets(st, vec2(0.5, 0.5));
+    canvas += planets(st, vec2(0.3, 0.3));
+    canvas += planets(st, vec2(0.7, 0.7));
+
+    canvas += spiral_planets(st);
+    canvas += radar_scan(st);
+    canvas += orbit_motion(st, sin(u_time*2)/5);
+
+
+    //canvas += unequal_circle(st);
+
     //canvas += draw_point(st, vec2(pos_mouse.x, 1.0-pos_mouse.y), 20);
     //canvas += draw_point(st, vec2(pos_mouse.x+0.1, 1.0-pos_mouse.y), 20);
     //canvas += shadow_follow_mouse(st);
@@ -188,19 +229,17 @@ void main() {
 
 
 //---
-   canvas += draw_stars2(st, canvas, 20, 0.0);
-   //if(u_orbit){
-   //    canvas += orbit_motion(st, sin(u_time*2)/5);
-   //}
+   //canvas += draw_stars2(st, canvas, 20, 0.0);
+   //if(u_orbit){   //}
 
-   canvas += noise_squares(st);
-   bool tmp = (st.x-0.5>-0.1)&&(st.x-0.5<0.1)&&(st.y-0.1<0.1)&&(st.y-0.1>-0.1);
-   canvas += vec3(tmp, 0.0, 0.0);
+   //canvas += noise_squares(st);
+   //bool tmp = (st.x-0.5>-0.1)&&(st.x-0.5<0.1)&&(st.y-0.1<0.1)&&(st.y-0.1>-0.1);
+   //canvas += vec3(tmp, 0.0, 0.0);
 //---
     //canvas += vec3(random(ipos));
 
 
-    //color +=point;
+    canvas += vec3(0.0, 0.0, 0.3);
     //point += point_star;    
 
     gl_FragColor = vec4(canvas, 1.0);
