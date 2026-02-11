@@ -178,6 +178,12 @@ vec3 planets(vec2 _st, vec2 center){
     return planets;
 }
 
+vec3 pendulum(vec2 _st){
+
+    //return draw_point(_st, vec2(0.5+sin(u_time)*0.1, 0.5+cos(u_time)*0.1), 20);
+    return draw_point(_st, vec2(0.5+sin(u_time)*0.4, 0.3+cos(u_time*2)*-0.1), 20);
+}
+
 void main() {
 
     vec2 st = gl_FragCoord.xy/u_resolution;
@@ -192,15 +198,16 @@ void main() {
    //vec3 point = vec3(dist>0.02, 0.0, 0.0);
     vec3 canvas = vec3(0.0, 0.0, 0.0);
 
+    canvas += pendulum(st);
     //canvas += unequal_circle(st);
 
-    canvas += planets(st, vec2(0.5, 0.5));
-    canvas += planets(st, vec2(0.3, 0.3));
-    canvas += planets(st, vec2(0.7, 0.7));
-
-    canvas += spiral_planets(st);
-    canvas += radar_scan(st);
-    canvas += orbit_motion(st, sin(u_time*2)/5);
+    //canvas += planets(st, vec2(0.5, 0.5));
+    //canvas += planets(st, vec2(0.3, 0.3));
+    //canvas += planets(st, vec2(0.7, 0.7));
+//
+    //canvas += spiral_planets(st);
+    //canvas += radar_scan(st);
+    //canvas += orbit_motion(st, sin(u_time*2)/5);
 
 
     //canvas += unequal_circle(st);

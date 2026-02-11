@@ -1,8 +1,8 @@
 PShader shader;
 boolean orbit;
 void setup() {
-  fullScreen(P3D);
-  //size(640, 640, P3D);
+  //fullScreen(P3D);
+  size(640, 640, P3D);
   noStroke();
   orbit = true;
   shader = loadShader("shader2.frag");
