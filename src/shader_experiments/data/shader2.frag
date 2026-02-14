@@ -1,6 +1,3 @@
-// Author: @patriciogv
-// Title: CellularNoise
-
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -10,6 +7,7 @@ uniform vec2 u_mouse;
 uniform float u_time;
 uniform bool u_orbit;
 
+varying vec4 transformedPosition;
 
 float random(vec2 _st, float seed) {
     return fract(sin(dot(_st.xy,
@@ -186,8 +184,9 @@ vec3 pendulum(vec2 _st){
 
 void main() {
 
-    vec2 st = gl_FragCoord.xy/u_resolution;
-
+    //vec2 st = gl_FragCoord.xy/u_resolution;
+    vec2 st = transformedPosition.xy/u_resolution;
+    st = vec2(st.x+0.5, st.y+0.5);
     vec2 pos_mouse = u_mouse/u_resolution;
 
     //vec2 diff = vec2(0.3-st.x, 0.5-st.y);
@@ -198,16 +197,16 @@ void main() {
    //vec3 point = vec3(dist>0.02, 0.0, 0.0);
     vec3 canvas = vec3(0.0, 0.0, 0.0);
 
-    canvas += pendulum(st);
+    //canvas += pendulum(st);
     //canvas += unequal_circle(st);
 
     //canvas += planets(st, vec2(0.5, 0.5));
     //canvas += planets(st, vec2(0.3, 0.3));
     //canvas += planets(st, vec2(0.7, 0.7));
 //
-    //canvas += spiral_planets(st);
-    //canvas += radar_scan(st);
-    //canvas += orbit_motion(st, sin(u_time*2)/5);
+    canvas += spiral_planets(st);
+    canvas += radar_scan(st);
+    canvas += orbit_motion(st, sin(u_time*2)/5);
 
 
     //canvas += unequal_circle(st);
@@ -240,14 +239,17 @@ void main() {
    //if(u_orbit){   //}
 
    //canvas += noise_squares(st);
-   //bool tmp = (st.x-0.5>-0.1)&&(st.x-0.5<0.1)&&(st.y-0.1<0.1)&&(st.y-0.1>-0.1);
+  // bool tmp = (st.x-0.5>-0.1)&&(st.x-0.5<0.1)&&(st.y-0.1<0.1)&&(st.y-0.1>-0.1);
    //canvas += vec3(tmp, 0.0, 0.0);
 //---
     //canvas += vec3(random(ipos));
 
 
-    canvas += vec3(0.0, 0.0, 0.3);
-    //point += point_star;    
+    //canvas += vec3(0.0, 0.0, 0.3);
+    //point += point_star;  
+
+    //canvas += vec3(step(st.x, 0.5), 0.5, 0.0);
+  
 
     gl_FragColor = vec4(canvas, 1.0);
 }
