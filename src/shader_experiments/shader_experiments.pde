@@ -32,9 +32,10 @@
 PShader flatShader;
 
 void setup() {
-  size(640, 360, P3D);
+  //size(640, 360, P3D);
+  fullScreen(P3D);
   flatShader = loadShader("shader2.frag", "vertex_shader.vert");
-  //flatShader = loadShader("fragment_shader.frag");
+  //flatShader = loadShader("shader2.frag");
   shader(flatShader);
 }
 
@@ -43,7 +44,7 @@ void draw() {
   flatShader.set("u_time", millis() / 1000.0);
   flatShader.set("u_mouse", float(mouseX), float(mouseY));
 
-  background(1);
+  //background(1);
   noStroke();
   
   rect(0,0,width,height);
