@@ -241,7 +241,7 @@ void main() {
     col /= dot(cos(st*3.),sin(-st.yx*3.*.618))+2.0;
     //Exponential tonemap
     col = 1.0 - exp(-col);
-    //canvas += col;
+    canvas += col;
 
     //---
 

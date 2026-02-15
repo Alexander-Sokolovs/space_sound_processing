@@ -1,0 +1,29 @@
+PShader shader;
+
+boolean USE_VERTEX_SHADER = true;
+String FRAGMENT_SHADER_FILE = "shader2.frag";
+String VERTEX_SHADER_FILE = "vertex_shader.vert";
+
+void setup() {
+  //size(640, 360, P3D);
+  fullScreen(P3D);
+  
+  if(USE_VERTEX_SHADER){
+    shader = loadShader(FRAGMENT_SHADER_FILE, VERTEX_SHADER_FILE);
+  }else{
+    shader = loadShader(FRAGMENT_SHADER_FILE);
+  }
+  
+  shader(shader);
+}
+
+void draw() {
+  noStroke();
+
+  // pass variables to be used inside the shader code
+  shader.set("u_resolution", float(width), float(height));
+  shader.set("u_time", millis() / 1000.0);
+  shader.set("u_mouse", float(mouseX), float(mouseY));
+
+  rect(0,0,width,height);
+}

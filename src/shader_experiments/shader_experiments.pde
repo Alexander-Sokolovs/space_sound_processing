@@ -34,8 +34,8 @@ PShader flatShader;
 void setup() {
   //size(640, 360, P3D);
   fullScreen(P3D);
-  flatShader = loadShader("shader2.frag", "vertex_shader.vert");
-  //flatShader = loadShader("shader2.frag");
+  //flatShader = loadShader("fragment_shader.glsl", "vertex_shader.vert");
+  flatShader = loadShader("fragment_shader.glsl");
   shader(flatShader);
 }
 
