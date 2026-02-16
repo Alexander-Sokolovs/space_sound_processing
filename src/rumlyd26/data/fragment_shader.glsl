@@ -5,15 +5,85 @@ precision mediump float;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
-uniform bool u_orbit;
+uniform int u_orbit;
+uniform float u_activation_array[22];
 
 varying vec4 transformedPosition;
 
 // --- HELPER FUNCTIONS ---
+float random(vec2 _st, float seed) {
+    return fract(sin(dot(_st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123+seed);
+}
 
+vec3 draw_point(vec2 _st, vec2 _pos_xy, float size)
+{
+    vec2 diff = vec2(_pos_xy.x-_st.x, _pos_xy.y-_st.y);
+    vec3 point = vec3(0.0, 0.0, 0.0);
+   // float dist = sqrt(((pos_mouse.x-st.x)*(pos_mouse.x-st.x))+((pos_mouse.y-st.y)*(pos_mouse.y-st.y)));
+    float dist = length(diff);
+    if(dist<size/100.0){
+        point = vec3(2*_st.x, 1-_st.x, 0.0);
+
+    }
+
+    return point;
+}
 
 // --- SCENES ---
+vec3 radar_scan(vec2 _st){
+    vec3 planets = vec3(0.0, 0.0, 0.0);
+    for(int i = 0; i < 5; i++){
+        float phase = u_time+random(_st, 0.0);
+        planets += draw_point(_st, vec2(0.5+sin(phase)*i*0.5, 0.5+cos(phase)*i*0.5), 5);
+    }
+    return planets;
+}
 
+vec3 spiral_planets(vec2 _st, vec2 center){
+    vec3 planets = vec3(0.0, 0.0, 0.0);
+    float num_planets = 300;
+    for(int i = 0; i < num_planets; i++){
+        float phase = u_time*i*0.001;
+        planets += draw_point(_st, vec2(center.x+sin(phase)*i*0.001, 1.0-center.y+cos(phase)*i*0.001), i*0.04);
+    }
+    return planets;
+}
+
+vec3 planets(vec2 _st, vec2 center){
+    vec3 planets = vec3(0.0, 0.0, 0.0);
+    float num_planets = 10;
+    for(int i = 0; i < num_planets; i++){
+        float phase = u_time*i*0.1;
+        planets += draw_point(_st, vec2(center.x+sin(phase)*i*0.01, center.y+cos(phase)*i*0.01), i*4);
+    }
+    return planets;
+}
+
+vec3 orbit_motion(vec2 _st, float amplitude)
+{
+    vec3 tmp_canvas;
+    float i = 0;
+    for(int x = 0; x <  3; x++)
+    {
+        i = x + 0.1;
+        tmp_canvas += draw_point(_st, vec2((sin(u_time*10*(0.5-i*0.25))*amplitude)+0.5, 0.5+cos(u_time*8*(0.5-i*0.15))*(amplitude-i*0.01)), 15);
+    }
+
+    for(int x = 0; x <  3; x++)
+    {
+        i = x + 0.1;
+        tmp_canvas += draw_point(_st, vec2((sin(u_time*9*(0.5-i*0.25))*amplitude)+0.25, 0.5+cos(u_time*9*(0.5-i*0.15))*(amplitude-i*0.01)), 15);
+    }
+
+    for(int x = 0; x <  3; x++)
+    {
+        i = x + 0.1;
+        tmp_canvas += draw_point(_st, vec2((sin(u_time*8*(0.5-i*0.25))*amplitude)+0.75, 0.5+cos(u_time*10*(0.5-i*0.15))*(amplitude-i*0.01)), 15);
+    }
+    return tmp_canvas;
+}
 
 vec2 turbulence(vec2 pos){
     // https://mini.gmshaders.com/p/turbulence
@@ -69,9 +139,14 @@ void main(){
     vec2 pos_mouse =  2*(u_mouse.xy*2.0-u_resolution.xy)/u_resolution.y+0.5;
     vec2 st = 2*(gl_FragCoord.xy*2.0-u_resolution.xy)/u_resolution.y+0.5;
 
-	if(u_orbit){
-		canvas += shadow_follow_mouse(st, pos_mouse);
-    }
+	//canvas += shadow_follow_mouse(st, pos_mouse)*u_orbit;
+	canvas += radar_scan(st)*u_activation_array[1];
+	canvas += shadow_follow_mouse(st, pos_mouse)*u_activation_array[2];
+	canvas += spiral_planets(st, pos_mouse)*u_activation_array[3];
+	canvas += planets(st, vec2(0.5, 0.5))*u_activation_array[4];
+	canvas += orbit_motion(st, sin(u_time*2))*u_activation_array[5];
+
+	//canvas += vec3(0.0, u_activation_array[0], 0.0);
 
     // turbulence: 
     st = turbulence(st);
