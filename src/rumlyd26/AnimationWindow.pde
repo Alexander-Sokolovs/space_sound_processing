@@ -22,7 +22,7 @@ class AnimationWindow extends PApplet {
   }
   
   void setup() {
-    surface.setResizable(true);
+    //surface.setResizable(true);
 
     windowTitle("Animation window");
     shader(shader);
@@ -47,10 +47,13 @@ class AnimationWindow extends PApplet {
     rect(0,0,width,height);
 
   }
-  void setActivationArray(float[] _activation_array){
-    act_arr = _activation_array;
+  void setActivationArray(int idx, int value){
+    act_arr[idx] = value;
   }
   
+  float[] get_activation_array(){
+     return act_arr; 
+  }
   PShader getShader(){
     return shader;
   }

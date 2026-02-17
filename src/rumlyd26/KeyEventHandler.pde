@@ -1,16 +1,23 @@
 //boolean[] activation_array;
 
 class KeyEventHandler {
- 
+  boolean CONTROL_PRESSED;
   KeyEventHandler() {
     // use the activation array for now, then find a better mechanism (multi instance, defined areas, ...)
-    //activation_array = new boolean[22];
-    for(int i = 0; i < activation_array.length; i ++){
-      activation_array[i] = 0;
-    }
+    selected_window = -1;
   }
   void keyPressedEvent(KeyEvent ke){
     println(keyCode);
+    if(keyCode == CONTROL){
+      CONTROL_PRESSED = !CONTROL_PRESSED;
+      println("CONTROL_PRESSED:: " + CONTROL_PRESSED);
+    }
+    if(keyCode == 65){
+      selected_window = -1;
+    }
+    
+    
+    // set activation array
     int index = -1;
     try{
       if(keyCode >= 97 && keyCode <= 108){
@@ -19,18 +26,40 @@ class KeyEventHandler {
         index = Integer.parseInt(""+key);
       }
     }catch(NumberFormatException e){}
-      if (index < activation_array.length && index >= 0){
-        if(activation_array[index] == 1){
-            activation_array[index] = 0;
-        }else{
-            activation_array[index] = 1;
+    
+    
+    println("IDX: " + index + " CONTROL_PRESSED " + CONTROL_PRESSED);
+    if(!CONTROL_PRESSED && index > 0){
+      //if(index>0 && index < window_array[selected_window].get_activation_array().length){
+
+      if(selected_window < 0){
+        for(int i = 0; i < window_array.length; i++){
+          setActivationArray(i, index);
         }
-      }
+      }else{
+        setActivationArray(selected_window, index);
+      }  
+    //}
       
-      println(activation_array);
+    }else{
+      selected_window = index;
+      println("Selected window " + selected_window);
+
+    }
+}
+ 
+  void setActivationArray(int sel_window, int idx){
+       if(window_array[sel_window].get_activation_array()[idx] == 1){
+          window_array[sel_window].get_activation_array()[idx] = 0;
+      }else{
+          window_array[sel_window].get_activation_array()[idx] = 1;
+      }    
   }
-  
-  //boolean[] getActivationArray(){
-  //   return  activation_array;
+  //void keyReleasedEvent(KeyEvent ke){
+  //  if(ke.getKeyCode() == CONTROL){
+  //    CONTROL_PRESSED = false;
+  //    println("CONTROL_PRESSED:: " + CONTROL_PRESSED);
+
+  //  }
   //}
 }
